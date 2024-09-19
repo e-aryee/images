@@ -1,0 +1,35 @@
+name: Push Existing Docker Image to ACR
+ 
+on:
+  workflow_dispatch:  # Allows manually triggering the workflow
+ 
+jobs:
+  push-image:
+    runs-on: ubuntu-latest  # Ensure that 'runs-on' is properly placed at the same level as 'steps'
+    
+    steps:
+      # Step 1: Log in to Azure using the service principal credentials
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+ 
+      # Step 2: Log in to ACR
+      - name: Log in to Azure Container Registry
+        run: |
+          az acr login --name ${{ secrets.ACR_NAME }}
+ 
+      # Step 3: Pull the existing Docker image (replace <source-image> with your image name and tag)
+      - name: Pull existing Docker image
+        run: |
+          docker pull ghcr.io/digitalinnovation/df-shir:latest
+ 
+      # Step 4: Tag the Docker image for ACR (replace <repository> and <tag> with your ACR repo details)
+      - name: Tag Docker image for ACR
+        run: |
+          docker tag ghcr.io/digitalinnovation/df-shir:latest ${{ secrets.ACR_NAME }}/digitalinnovation/df-shir:latest
+ 
+      # Step 5: Push the Docker image to ACR
+      - name: Push Docker image to ACR
+        run: |
+          docker push ${{ secrets.ACR_NAME }}/digitalinnovation/df-shir:latest
