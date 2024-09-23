@@ -8,7 +8,7 @@ function Write-Log($Message) {
 function Install-SHIR() {
     Write-Log "Install the Self-hosted Integration Runtime in the Windows container"
 
-    $MsiFiles = (Get-ChildItem -Path C:\Users\ea_admin\Container\SHIR\ | Where-Object { $_.Name -match [regex] "IntegrationRuntime.*.msi" })
+    $MsiFiles = (Get-ChildItem -Path C:\SHIR\ | Where-Object { $_.Name -match [regex] "IntegrationRuntime.*.msi" })
     if ($MsiFiles) {
         $MsiFileName = $MsiFiles[0].Name
         Write-Log "Using SHIR MSI file: $MsiFileName"
@@ -19,20 +19,20 @@ function Install-SHIR() {
 
         # Temporarily disable progress updates to speed up the download process. (See https://stackoverflow.com/questions/69942663/invoke-webrequest-progress-becomes-irresponsive-paused-while-downloading-the-fil)
         $ProgressPreference = 'SilentlyContinue'
-        Invoke-WebRequest -Uri 'https://go.microsoft.com/fwlink/?linkid=839822&clcid=0x409' -OutFile "C:\Users\ea_admin\Container\SHIR\$MsiFileName"
+        Invoke-WebRequest -Uri 'https://go.microsoft.com/fwlink/?linkid=839822&clcid=0x409' -OutFile "C:\SHIR\$MsiFileName"
         $ProgressPreference = 'Continue'
     }
 
     Write-Log "Installing SHIR"
-    Start-Process msiexec.exe -Wait -ArgumentList "/i C:\Users\ea_admin\Container\SHIR\$MsiFileName /qn"
+    Start-Process msiexec.exe -Wait -ArgumentList "/i C:\SHIR\$MsiFileName /qn"
     if (!$?) {
         Write-Log "SHIR MSI Install Failed"
     }
 
     Write-Log "SHIR MSI Install Successfully"
-    Write-Log "Will remove C:\Users\ea_admin\Container\SHIR\$MsiFileName"
-    Remove-Item "C:\Users\ea_admin\Container\SHIR\$MsiFileName"
-    Write-Log "Removed C:\Users\ea_admin\Container\SHIR\$MsiFileName"
+    Write-Log "Will remove C:\SHIR\$MsiFileName"
+    Remove-Item "C:\SHIR\$MsiFileName"
+    Write-Log "Removed C:\SHIR\$MsiFileName"
 }
 
 function Install-MSFT-JDK() {
@@ -43,19 +43,19 @@ function Install-MSFT-JDK() {
 
     # Temporarily disable progress updates to speed up the download process. (See https://stackoverflow.com/questions/69942663/invoke-webrequest-progress-becomes-irresponsive-paused-while-downloading-the-fil)
     $ProgressPreference = 'SilentlyContinue'
-    Invoke-WebRequest -Uri "https://aka.ms/download-jdk/$JDKMsiFileName" -OutFile "C:\Users\ea_admin\Container\SHIR\$JDKMsiFileName"
+    Invoke-WebRequest -Uri "https://aka.ms/download-jdk/$JDKMsiFileName" -OutFile "C:\SHIR\$JDKMsiFileName"
     $ProgressPreference = 'Continue'
 
     Write-Log "Installing Microsoft OpenJDK"
     # Arguments pulled from https://learn.microsoft.com/en-us/java/openjdk/install#install-via-msi
-    Start-Process msiexec.exe -Wait -ArgumentList "/i C:\Users\ea_admin\Container\SHIR\$JDKMsiFileName ADDLOCAL=FeatureMain,FeatureEnvironment,FeatureJarFileRunWith,FeatureJavaHome INSTALLDIR=`"c:\Program Files\Microsoft\`" /quiet"
+    Start-Process msiexec.exe -Wait -ArgumentList "/i C:\SHIR\$JDKMsiFileName ADDLOCAL=FeatureMain,FeatureEnvironment,FeatureJarFileRunWith,FeatureJavaHome INSTALLDIR=`"c:\Program Files\Microsoft\`" /quiet"
     if (!$?) {
         Write-Log "Microsoft OpenJDK MSI Install Failed"
     }
     Write-Log "Microsoft OpenJDK MSI Install Successfully"
     Write-Log "Will remove C:\SHIR\$JDKMsiFileName"
-    Remove-Item "C:\Users\ea_admin\Container\SHIR\$JDKMsiFileName"
-    Write-Log "Removed C:\Users\ea_admin\Container\SHIR\$JDKMsiFileName"
+    Remove-Item "C:\SHIR\$JDKMsiFileName"
+    Write-Log "Removed C:\SHIR\$JDKMsiFileName"
 }
 
 function SetupEnv() {
