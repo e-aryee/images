@@ -50,7 +50,7 @@ function RegisterNewNode {
             $PORT = "8060"
         }
         Write-Log "Remote Access Port: $($PORT)"
-        Start-Process $DmgcmdPath -Wait -ArgumentList "-EnableRemoteAccessInContainer", "$($PORT)" -RedirectStandardOutput "C:\Users\ea_admin\Container\SHIR\register-out.txt" -RedirectStandardError "C:\Users\ea_admin\Container\SHIR\register-error.txt"
+        Start-Process $DmgcmdPath -Wait -ArgumentList "-EnableRemoteAccessInContainer", "$($PORT)" -RedirectStandardOutput "C:\SHIR\register-out.txt" -RedirectStandardError "C:\Users\ea_admin\Container\SHIR\register-error.txt"
         Start-Sleep -Seconds 15
     }
 
@@ -67,8 +67,8 @@ function RegisterNewNode {
         Start-Process $DmgcmdPath -Wait -ArgumentList "-RegisterNewNode", "$($AUTH_KEY)", "$($NODE_NAME)" -RedirectStandardOutput "C:\SHIR\register-out.txt" -RedirectStandardError "C:\SHIR\register-error.txt"
     }
 
-    $StdOutResult = Get-Content "C:\Users\ea_admin\Container\SHIR\register-out.txt"
-    $StdErrResult = Get-Content "C:\Users\ea_admin\Container\SHIR\register-error.txt"
+    $StdOutResult = Get-Content "C:\SHIR\register-out.txt"
+    $StdErrResult = Get-Content "C:\SHIR\register-error.txt"
 
     if ($StdOutResult)
     {
